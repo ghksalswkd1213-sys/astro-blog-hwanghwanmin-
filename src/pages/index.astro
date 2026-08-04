@@ -1,0 +1,37 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../config';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+<BaseLayout>
+  <div class="container">
+    <section class="hero">
+      <h1>{SITE.title}</h1>
+      <p>{SITE.description}</p>
+    </section>
+
+    <ul class="post-list">
+      {posts.map((post) => (
+        <li class="post-item">
+          <div class="post-meta">
+            <time datetime={post.data.pubDate.toISOString()}>{fmt(post.data.pubDate)}</time>
+            {post.data.tags.length > 0 && (
+              <span class="tags">
+                {post.data.tags.map((t) => <span class="tag">#{t}</span>)}
+              </span>
+            )}
+          </div>
+          <h2><a href={`/blog/${post.id}/`}>{post.data.title}</a></h2>
+          {post.data.description && <p class="post-excerpt">{post.data.description}</p>}
+        </li>
+      ))}
+    </ul>
+  </div>
+</BaseLayout>
