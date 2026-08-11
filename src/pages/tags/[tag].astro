@@ -1,20 +1,31 @@
 ---
 import { getCollection } from 'astro:content';
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { SITE } from '../config';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 
-const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
-);
+// 태그별 글 목록. 각 고유 태그마다 정적 페이지를 생성한다.
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  const tags = [...new Set(posts.flatMap((p) => p.data.tags))];
+  return tags.map((tag) => ({
+    params: { tag },
+    props: {
+      tag,
+      posts: posts
+        .filter((p) => p.data.tags.includes(tag))
+        .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()),
+    },
+  }));
+}
 
+const { tag, posts } = Astro.props;
 const fmt = (d: Date) =>
   d.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
 ---
-<BaseLayout>
+<BaseLayout title={`#${tag}`} description={`'${tag}' 태그가 붙은 글 모음`}>
   <div class="container">
     <section class="hero">
-      <h1>{SITE.title}</h1>
-      <p>{SITE.description}</p>
+      <h1>#{tag}</h1>
+      <p>{posts.length}개의 글</p>
     </section>
 
     <ul class="post-list">
@@ -33,5 +44,7 @@ const fmt = (d: Date) =>
         </li>
       ))}
     </ul>
+
+    <a href="/tags/" class="back-link">← 전체 태그</a>
   </div>
 </BaseLayout>

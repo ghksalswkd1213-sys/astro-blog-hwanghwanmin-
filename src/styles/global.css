@@ -187,6 +187,27 @@ a:hover {
   padding: 0.15rem 0.55rem;
   border-radius: 999px;
 }
+a.tag:hover {
+  text-decoration: none;
+  color: var(--accent-hover);
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+/* ===== 태그 목록 페이지 ===== */
+.tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 2rem 0;
+}
+.tag-lg {
+  font-size: 0.95rem;
+  padding: 0.35rem 0.85rem;
+}
+.tag-count {
+  opacity: 0.6;
+  font-size: 0.85em;
+}
 
 /* ===== 개별 글 ===== */
 .article {
