@@ -2,5 +2,5 @@
 export const SITE = {
   title: '딥그린 노트',
   description: '조용히 읽기 좋은 개인 블로그. 기록하고, 다듬고, 남깁니다.',
-  author: 'Your Name',
+  author: 'hwanmin',
 };
